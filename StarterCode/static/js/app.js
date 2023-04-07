@@ -4,6 +4,7 @@ d3.json(url).then(function(data) {
     console.log(data);
 });
 
+//Created function to hold chart functions
 function init() {
     let dropdownMenu = d3.select(`#selDataset`);
     d3.json(url).then((data) => {
@@ -15,12 +16,10 @@ function init() {
             .property(`value`, id);
         });
         let firstSample = names[0];
-        console.log(firstSample);
-
+       
         populateMetadata(firstSample);
         barChart(firstSample);
         bubbleChart(firstSample);
-        newSelection(value);
     });
 };
 
@@ -29,13 +28,13 @@ function populateMetadata(sample) {
     d3.json(url).then((data) => {
         let metadata = data.metadata;
         let value = metadata.filter(result => result.id == sample);
-        console.log(value);
+        //console.log(value);
         let valueData = value[0];
         d3.select(`#sample-metadata`).html("");
 
 //Display each key-value pair from the metadata JSON object somewhere on the page
         Object.entries(valueData).forEach(([key, value]) => {
-            console.log(key, value);
+            //console.log(key, value);
             d3.select(`#sample-metadata`).append(`h5`).text(`${key}: ${value}`);
         });
     });
@@ -57,7 +56,7 @@ function barChart(sample) {
         let otu_labels = valueData.otu_labels;
         let sample_values = valueData.sample_values;
         
-        console.log(otu_ids, otu_labels, sample_values);
+        //console.log(otu_ids, otu_labels, sample_values);
 
         let yAxis = otu_ids.slice(0,10).map(id => `OTU ${id}`).reverse();
         let xAxis = sample_values.slice(0,10).reverse();
@@ -95,7 +94,7 @@ function bubbleChart(sample) {
         let otu_labels = valueData.otu_labels;
         let sample_values = valueData.sample_values;
 
-        console.log(otu_ids, otu_labels, sample_values);
+        //console.log(otu_ids, otu_labels, sample_values);
 
         let traceBubble = {
             x: otu_ids,
@@ -110,7 +109,7 @@ function bubbleChart(sample) {
         };
 
         let layout = {
-            title: `Bacteria in Samples`,
+            title: `Bacteria Found in Sample`,
             hovermode: `closest`,
             xaxis: {title: `OTU ID`}
         };
@@ -120,12 +119,12 @@ function bubbleChart(sample) {
 };
 
 //Update all the plots when a new sample is selected
-function newSelection(value) {
-    console.log(value);
+function updatePlotly(newData) {
+    //console.log(newData);
 
-    populateMetadata(value);
-    barChart(value);
-    bubbleChart(value);
+    populateMetadata(newData);
+    barChart(newData);
+    bubbleChart(newData);
 };
 
 init();
